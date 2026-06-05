@@ -1,50 +1,45 @@
 import { useState, useEffect } from 'react';
-import { getMe, login, register, logout } from './adapters/auth-adapters';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { fetchMe, fetchLogout } from './adapters/authAdapters';
+import Navbar from './components/Navbar';
+import HomePage from './components/HomePage';
+import BookPage from './components/BookPage';
 import AuthPage from './components/AuthPage';
-import TodoPage from './components/TodoPage';
+import './App.css';
 
-function App() {
+export default function App() {
   const [currentUser, setCurrentUser] = useState(null);
+  const [isRehydrating, setIsRehydrating] = useState(true);
 
-  // On every page load, check the server for an active session cookie.
-  // React state doesn't survive a refresh; session cookies do.
   useEffect(() => {
-    const checkForSession = async () => {
-      const { data: user } = await getMe();
-      setCurrentUser(user);
-    };
-    checkForSession();
+    fetchMe().then(setCurrentUser).finally(() => setIsRehydrating(false));
   }, []);
 
-  // Handlers that manage updating the current user. 
-  // Defined in App to ensure that child components only                       
-  // update the current user in a controlled manner.  
-  const handleLogin = async (username, password) => {
-    const { data: user, error } = await login(username, password);
-    if (error) return error;
-    setCurrentUser(user);
-  };
-
-  const handleRegister = async (username, password) => {
-    const { data: user, error } = await register(username, password);
-    if (error) return error;
-    setCurrentUser(user);
-  };
-
   const handleLogout = async () => {
-    await logout();
+    await fetchLogout();
     setCurrentUser(null);
   };
 
+  if (isRehydrating) return <div className="app-loading"><span>বই</span></div>;
+
   return (
-    <main>
-      <h1>Todo App</h1>
-      {currentUser
-        ? <TodoPage currentUser={currentUser} handleLogout={handleLogout} />
-        : <AuthPage handleLogin={handleLogin} handleRegister={handleRegister} />
-      }
-    </main>
+    <BrowserRouter>
+      {currentUser && <Navbar currentUser={currentUser} onLogout={handleLogout} />}
+      <Routes>
+        <Route path="/" element={
+          currentUser ? <HomePage /> : <Navigate to="/auth" />
+        } />
+        <Route path="/books" element={
+          currentUser
+            ? <BookPage currentUser={currentUser} onLogout={handleLogout} />
+            : <Navigate to="/auth" />
+        } />
+        <Route path="/auth" element={
+          currentUser
+            ? <Navigate to="/" />
+            : <AuthPage onLogin={setCurrentUser} onRegister={setCurrentUser} />
+        } />
+      </Routes>
+    </BrowserRouter>
   );
 }
-
-export default App;

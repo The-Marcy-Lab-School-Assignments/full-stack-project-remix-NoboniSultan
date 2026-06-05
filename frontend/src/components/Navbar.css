@@ -1,0 +1,79 @@
+/* Navbar.css */
+.navbar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    padding: 0.9rem 2rem;
+    background: var(--bg-glass);
+    backdrop-filter: var(--glass-blur);
+    border-bottom: 1px solid var(--glass-border);
+    transition: box-shadow var(--transition-base), background var(--transition-base);
+}
+
+.navbar--scrolled {
+    box-shadow: var(--shadow-md);
+}
+
+.navbar-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    color: var(--accent);
+    margin-right: auto;
+}
+
+.nav-link {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 0.3rem 0;
+    position: relative;
+    transition: color var(--transition-fast);
+    text-decoration: none;
+}
+
+.navbar-links {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: var(--accent);
+    transition: width var(--transition-base);
+}
+
+.nav-link:hover,
+.nav-link--active {
+    color: var(--text-primary);
+}
+
+.nav-link:hover::after,
+.nav-link--active::after {
+    width: 100%;
+}
+
+.navbar-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-left: auto;
+}
+
+.navbar-user {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.navbar-logout {
+    padding: 0.35rem 0.9rem;
+    font-size: 0.8rem;
+}

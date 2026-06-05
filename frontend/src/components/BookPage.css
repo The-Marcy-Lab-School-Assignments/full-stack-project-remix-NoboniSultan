@@ -1,0 +1,188 @@
+/* ─── Header ─────────────────────────────────────────────────────────────────── */
+.book-page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 2rem;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-surface);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.header-left {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+}
+
+.header-logo {
+    font-size: 1.75rem;
+    color: var(--accent);
+}
+
+.header-greeting {
+    color: var(--text-muted);
+    font-size: 0.875rem;
+}
+
+.header-greeting span {
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.header-add-btn {
+    width: auto;
+    padding: 0.5rem 1.1rem;
+    font-size: 0.9rem;
+}
+
+/* ─── Main ───────────────────────────────────────────────────────────────────── */
+.book-page-main {
+    padding: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.books-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.75rem;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.books-count {
+    color: var(--text-muted);
+    font-size: 0.875rem;
+}
+
+.page-error {
+    background: rgba(201, 112, 112, 0.1);
+    border: 1px solid rgba(201, 112, 112, 0.3);
+    border-radius: var(--radius-sm);
+    color: #e09090;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1.5rem;
+}
+
+/* ─── Modal ──────────────────────────────────────────────────────────────────── */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    padding: 1.5rem;
+    animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.modal {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    width: 100%;
+    max-width: 480px;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: slideUp 0.25s ease;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ─── Responsive ─────────────────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+    .book-page-header {
+        padding: 1rem;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+    }
+
+    .book-page-main {
+        padding: 1rem;
+    }
+
+    .header-left {
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+}
+
+/* Add Book Button */
+.fab {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 40;
+    width: 200px;
+    height: 200px;
+    background: none;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform var(--transition-base);
+    animation: floatBob 3s ease-in-out infinite;
+}
+
+.fab img {
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.4));
+    pointer-events: none;
+}
+
+.fab:hover {
+    transform: translateY(-4px) scale(1.08);
+    animation: none;
+}
+
+.fab:hover img {
+    filter: drop-shadow(0 8px 20px rgba(201, 169, 110, 0.5));
+}
+
+@keyframes floatBob {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-6px);
+    }
+}
