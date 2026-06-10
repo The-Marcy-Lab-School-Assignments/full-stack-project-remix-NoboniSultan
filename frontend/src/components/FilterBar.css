@@ -1,0 +1,19 @@
+.filter-bar {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.filter-group {
+    margin-bottom: 0;
+    min-width: 140px;
+}
+
+.filter-group label {
+    font-size: 0.72rem;
+}
+
+.filter-group select {
+    padding: 0.45rem 2rem 0.45rem 0.75rem;
+    font-size: 0.875rem;
+}

@@ -1,0 +1,367 @@
+/* ─── Layout ─────────────────────────────────────────────────────────────────── */
+.auth-page {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 100vh;
+}
+
+/* ─── Hero Panel ─────────────────────────────────────────────────────────────── */
+.auth-hero {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: radial-gradient(ellipse at 30% 40%, #3d2e1a 0%, transparent 65%),
+        radial-gradient(ellipse at 75% 70%, #1a2a1e 0%, transparent 60%),
+        var(--bg-base);
+    padding: 3rem;
+}
+
+/* Animated gradient blobs */
+.auth-hero-blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.35;
+    pointer-events: none;
+}
+
+.auth-hero-blob--1 {
+    width: 420px;
+    height: 420px;
+    background: radial-gradient(circle, #c9a96e 0%, transparent 70%);
+    top: -80px;
+    left: -100px;
+    animation: blobDrift1 14s ease-in-out infinite alternate;
+}
+
+.auth-hero-blob--2 {
+    width: 360px;
+    height: 360px;
+    background: radial-gradient(circle, #3a6a4a 0%, transparent 70%);
+    bottom: -60px;
+    right: -80px;
+    animation: blobDrift2 18s ease-in-out infinite alternate;
+}
+
+@keyframes blobDrift1 {
+    from {
+        transform: translate(0, 0) scale(1);
+    }
+
+    to {
+        transform: translate(40px, 30px) scale(1.08);
+    }
+}
+
+@keyframes blobDrift2 {
+    from {
+        transform: translate(0, 0) scale(1);
+    }
+
+    to {
+        transform: translate(-30px, -40px) scale(1.06);
+    }
+}
+
+.auth-hero-content {
+    position: relative;
+    z-index: 1;
+    text-align: left;
+}
+
+.auth-hero-title {
+    font-size: 5rem;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 0.75rem;
+}
+
+.auth-hero-subtitle {
+    font-size: 1.25rem;
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+    font-style: italic;
+    font-family: 'Playfair Display', serif;
+}
+
+.auth-hero-features {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.auth-hero-features li {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    padding-left: 1.25rem;
+    position: relative;
+}
+
+.auth-hero-features li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+}
+
+/* ─── Form Panel ─────────────────────────────────────────────────────────────── */
+.auth-form-panel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-surface);
+    border-left: 1px solid var(--border);
+    padding: 2rem;
+}
+
+/* In AuthPage.css — replace .auth-form-card */
+.auth-form-card {
+    /* Sharp edges — no border-radius */
+    border-radius: 0;
+
+    /* Glassmorphism */
+    background: var(--bg-glass);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow-glass),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+
+    padding: 2.5rem;
+    width: 100%;
+    max-width: 400px;
+    animation: fadeUp 0.4s ease both;
+
+    /* Subtle 3D depth on hover */
+    transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+
+.auth-form-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+/* Right panel — artwork goes here */
+.auth-hero {
+    position: relative;
+    overflow: hidden;
+    /* Your artwork image goes here: */
+    background-image: url('/auth-artwork.jpg');
+    background-size: cover;
+    background-position: center;
+}
+
+/* Dark overlay so form text stays readable */
+.auth-hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg,
+            rgba(26, 23, 20, 0.7) 0%,
+            rgba(26, 23, 20, 0.3) 100%);
+}
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(18px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.auth-form-header {
+    margin-bottom: 2rem;
+}
+
+.auth-form-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.auth-form-title {
+    font-size: 1.75rem;
+    color: var(--text-primary);
+}
+
+/* ─── Form Fields ────────────────────────────────────────────────────────────── */
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    background: var(--bg-base);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    padding: 0.65rem 0.9rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    width: 100%;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: var(--text-muted);
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-subtle);
+}
+
+.form-group select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b6456' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    padding-right: 2.25rem;
+    cursor: pointer;
+}
+
+.form-group select option {
+    background: var(--bg-surface);
+}
+
+/* ─── Buttons ────────────────────────────────────────────────────────────────── */
+.btn-primary {
+    background: var(--accent);
+    color: #1a1714;
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+    width: 100%;
+    margin-top: 0.5rem;
+    transition: background 0.2s ease, transform 0.1s ease, opacity 0.2s ease;
+}
+
+.btn-primary:hover:not(:disabled) {
+    background: var(--accent-hover);
+}
+
+.btn-primary:active:not(:disabled) {
+    transform: scale(0.98);
+}
+
+.btn-primary:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+.btn-secondary {
+    background: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 0.6rem 1.25rem;
+    font-size: 0.875rem;
+    transition: var(--transition);
+}
+
+.btn-secondary:hover {
+    background: var(--bg-elevated);
+    color: var(--text-primary);
+}
+
+.btn-danger {
+    background: transparent;
+    color: #c97070;
+    border: 1px solid rgba(201, 112, 112, 0.3);
+    border-radius: var(--radius-sm);
+    padding: 0.4rem 0.85rem;
+    font-size: 0.8rem;
+    transition: var(--transition);
+}
+
+.btn-danger:hover {
+    background: rgba(201, 112, 112, 0.1);
+    border-color: #c97070;
+}
+
+/* ─── Auth Error & Toggle ─────────────────────────────────────────────────────── */
+.auth-error {
+    background: rgba(201, 112, 112, 0.12);
+    border: 1px solid rgba(201, 112, 112, 0.35);
+    border-radius: var(--radius-sm);
+    color: #e09090;
+    font-size: 0.875rem;
+    padding: 0.65rem 0.9rem;
+    margin-bottom: 1.25rem;
+}
+
+.auth-toggle {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.875rem;
+    margin-top: 1.5rem;
+}
+
+.auth-toggle-btn {
+    background: none;
+    color: var(--accent);
+    font-size: 0.875rem;
+    padding: 0;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.auth-toggle-btn:hover {
+    color: var(--accent-hover);
+}
+
+/* ─── Responsive ─────────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+    .auth-page {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr;
+    }
+
+    .auth-hero {
+        padding: 2.5rem 2rem;
+        min-height: 220px;
+    }
+
+    .auth-hero-title {
+        font-size: 3.5rem;
+    }
+
+    .auth-form-panel {
+        border-left: none;
+        border-top: 1px solid var(--border);
+        padding: 2rem 1.5rem;
+    }
+}

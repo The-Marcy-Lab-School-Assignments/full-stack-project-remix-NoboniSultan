@@ -1,0 +1,82 @@
+/* ─── Shared form container (used inside a modal) ───────────────────────────── */
+.book-form-container {
+    padding: 1.75rem;
+}
+
+.book-form-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+}
+
+.book-form-header h2 {
+    font-size: 1.4rem;
+}
+
+.form-close-btn {
+    background: none;
+    color: var(--text-muted);
+    font-size: 1rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--radius-sm);
+    transition: color 0.15s ease, background 0.15s ease;
+}
+
+.form-close-btn:hover {
+    color: var(--text-primary);
+    background: var(--bg-elevated);
+}
+
+/* ─── Two-column row for shorter fields ──────────────────────────────────────── */
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+/* ─── Form action buttons ────────────────────────────────────────────────────── */
+.form-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+}
+
+.form-submit-btn {
+    width: auto;
+    flex: 1;
+}
+
+.form-actions .btn-secondary {
+    flex: 0 0 auto;
+}
+
+/* ─── Textarea ───────────────────────────────────────────────────────────────── */
+.form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+    background: var(--bg-base);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    padding: 0.65rem 0.9rem;
+    width: 100%;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-group textarea:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-subtle);
+}
+
+/* ─── Responsive ─────────────────────────────────────────────────────────────── */
+@media (max-width: 480px) {
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .book-form-container {
+        padding: 1.25rem;
+    }
+}

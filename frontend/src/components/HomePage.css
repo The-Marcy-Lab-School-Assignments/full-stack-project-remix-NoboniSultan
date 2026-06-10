@@ -1,0 +1,329 @@
+/* HomePage.css */
+.home-page {
+    min-height: 100vh;
+}
+
+.home-hero {
+    padding: 3rem 2rem 2rem;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+}
+
+.home-title {
+    font-size: 2rem;
+    color: var(--text-primary);
+    margin-bottom: 1.5rem;
+}
+
+.search-bar-wrapper {
+    position: relative;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.search-bar {
+    width: 100%;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 0;
+    /* sharp */
+    color: var(--text-primary);
+    font-size: 1rem;
+    padding: 0.85rem 1.25rem;
+    transition: border-color var(--transition-base), box-shadow var(--transition-base);
+}
+
+.search-bar:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-subtle);
+    outline: none;
+}
+
+.search-spinner {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: translateY(-50%) rotate(360deg);
+    }
+}
+
+/* ─── Body layout ── */
+.home-body {
+    display: flex;
+    min-height: calc(100vh - 140px);
+}
+
+/* ─── Sidebar ── */
+.genre-sidebar {
+    width: 200px;
+    flex-shrink: 0;
+    border-right: 1px solid var(--border);
+    padding: 1.5rem 1rem;
+    transition: width var(--transition-slow);
+    overflow: hidden;
+}
+
+.genre-sidebar--collapsed {
+    width: 40px;
+    padding: 1.5rem 0.5rem;
+}
+
+.sidebar-toggle {
+    background: none;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    padding: 0.25rem 0.5rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    margin-bottom: 1rem;
+    transition: var(--transition-fast);
+    white-space: nowrap;
+}
+
+.sidebar-toggle:hover {
+    color: var(--text-primary);
+}
+
+.sidebar-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    margin-bottom: 0.75rem;
+}
+
+.genre-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.genre-btn {
+    background: none;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    padding: 0.4rem 0.75rem;
+    text-align: left;
+    width: 100%;
+    border: none;
+    border-radius: var(--radius-sm);
+    transition: var(--transition-fast);
+    white-space: nowrap;
+}
+
+.genre-btn:hover {
+    background: var(--bg-elevated);
+    color: var(--text-primary);
+}
+
+.genre-btn--active {
+    background: var(--accent-subtle);
+    color: var(--accent);
+}
+
+/* ─── Results grid ── */
+.results-grid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 1.25rem;
+    padding: 1.5rem;
+    align-content: start;
+}
+
+.home-empty {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem;
+    color: var(--text-muted);
+}
+
+.result-card {
+    cursor: pointer;
+    transition: transform var(--transition-base);
+}
+
+.result-card:hover {
+    transform: translateY(-4px);
+}
+
+.result-cover-wrapper {
+    aspect-ratio: 2/3;
+    overflow: hidden;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+}
+
+.result-cover-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--transition-slow);
+}
+
+.result-card:hover .result-cover-wrapper img {
+    transform: scale(1.04);
+}
+
+.result-info {
+    padding: 0.5rem 0;
+}
+
+.result-title {
+    font-size: 0.85rem;
+    color: var(--text-primary);
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.result-author {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 0.15rem;
+}
+
+/* ─── Detail panel (glassmorphism) ── */
+.detail-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(6px);
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    animation: fadeIn 0.2s ease;
+}
+
+.detail-panel {
+    position: relative;
+    background: var(--bg-glass);
+    backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow-glass);
+    border-radius: 0;
+    /* sharp */
+    max-width: 700px;
+    width: 100%;
+    max-height: 85vh;
+    overflow-y: auto;
+    animation: slideUp 0.3s ease;
+}
+
+.detail-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    color: var(--text-muted);
+    font-size: 1rem;
+    padding: 0.25rem 0.5rem;
+    border: 1px solid var(--border);
+    transition: var(--transition-fast);
+}
+
+.detail-close:hover {
+    color: var(--text-primary);
+}
+
+.detail-inner {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 2rem;
+    padding: 2rem;
+}
+
+.detail-cover {
+    width: 100%;
+    aspect-ratio: 2/3;
+    object-fit: cover;
+    border: 1px solid var(--border);
+}
+
+.detail-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.detail-meta h2 {
+    font-size: 1.4rem;
+}
+
+.detail-author {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.detail-genre {
+    color: var(--accent);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.detail-desc {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    line-height: 1.7;
+    display: -webkit-box;
+    -webkit-line-clamp: 6;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.detail-add-btn {
+    margin-top: auto;
+    width: auto;
+    padding: 0.65rem 1.5rem;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(24px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 600px) {
+    .detail-inner {
+        grid-template-columns: 1fr;
+    }
+
+    .detail-cover {
+        max-width: 160px;
+    }
+}

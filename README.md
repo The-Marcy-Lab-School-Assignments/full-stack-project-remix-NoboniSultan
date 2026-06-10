@@ -1,142 +1,211 @@
-# Todo App — Full-Stack Case Study
+# boi (বই)
 
-A full-stack Todo app built with React, Express, and Postgres. Demonstrates session-based authentication, session rehydration, auth-dependent data fetching, and conditional rendering — the same patterns students use in their full-stack projects.
+*boi (বই) means "books" in Bangla.*
+
+**Live Demo:** https://boi-frontend.onrender.com 
+**API:** https://boi-api.onrender.com 
+
+---
+
+## What is boi?
+
+boi is a personal reading tracker for people who want to stay on top of what they're reading. Create an account, add books to your list, track where you are in each one, leave notes, and rate the ones you've finished, all in one place.
+
+---
 
 ## User Stories
 
-**Auth**
-- A user can register for an account with a username and password
-- A user can log in to an existing account
-- A user can log out
-- A returning user who has an active session is automatically logged in when they revisit the app
+- A user can register and log in to a personal account
+- A user can add books with a title, author, genre, status, rating, and notes
+- A user can view all of their books
+- A user can edit a book's details or update its reading status
+- A user can delete a book from their list
+- A user can filter their list by status (`want-to-read`, `reading`, `finished`) or genre
+- A returning user with an active session is automatically logged in on revisit
 
-**Todos**
-- A logged-in user can see all of their todos
-- A logged-in user can create a new todo by entering a title
-- A logged-in user can mark a todo as complete or incomplete
-- A logged-in user can delete a todo
+### Stretch Goals
 
-## Schema
+- Reading stats (total finished, average rating, top genre)
+- Search by title or author
+- Book detail pages with React Router
+- Dark mode
+
+---
+
+## Tech Stack
+
+| Layer | Tech |
+|-------|------|
+| Frontend | React + Vite |
+| Backend | Node.js + Express |
+| Database | PostgreSQL |
+| Auth | express-session + bcrypt |
+| Deployment | Render (app) + Railway (DB) |
+
+---
+
+## Database Schema
+
+A user has many books. Deleting a user cascades to delete all their books.
 
 ```
 users
-─────────────────────────────
+──────────────────────────────────
 user_id       SERIAL PRIMARY KEY
 username      TEXT UNIQUE NOT NULL
 password_hash TEXT NOT NULL
 
-todos
-─────────────────────────────
-todo_id     SERIAL PRIMARY KEY
-title       TEXT NOT NULL
-is_complete BOOLEAN DEFAULT FALSE
-user_id     INTEGER REFERENCES users(user_id) ON DELETE CASCADE
+books
+──────────────────────────────────
+book_id    SERIAL PRIMARY KEY
+title      TEXT NOT NULL
+author     TEXT NOT NULL
+genre      TEXT
+status     TEXT DEFAULT 'want-to-read'
+           CHECK (status IN ('want-to-read', 'reading', 'finished'))
+rating     INTEGER CHECK (rating BETWEEN 1 AND 5)
+notes      TEXT
+user_id    INTEGER REFERENCES users(user_id) ON DELETE CASCADE
 ```
 
-A user has many todos. Deleting a user cascades to delete all of their todos.
+---
 
 ## API Contract
 
-### Auth endpoints
+### Auth
 
-| Method | Endpoint             | Request Body             | Response                          |
-| ------ | -------------------- | ------------------------ | --------------------------------- |
-| POST   | `/api/auth/register` | `{ username, password }` | `{ user_id, username }`           |
-| POST   | `/api/auth/login`    | `{ username, password }` | `{ user_id, username }`           |
-| DELETE | `/api/auth/logout`   | —                        | `{ message }`                     |
-| GET    | `/api/auth/me`       | —                        | `{ user_id, username }` or `null` |
+| Method | Endpoint | Body | Response |
+|--------|----------|------|----------|
+| `POST` | `/api/auth/register` | `{ username, password }` | `{ user_id, username }` |
+| `POST` | `/api/auth/login` | `{ username, password }` | `{ user_id, username }` |
+| `DELETE` | `/api/auth/logout` | — | `{ message }` |
+| `GET` | `/api/auth/me` | — | `{ user_id, username }` or `null` |
 
-### Todo endpoints (all require authentication)
+### Books *(authentication required)*
 
-| Method | Endpoint              | Request Body      | Response                                     |
-| ------ | --------------------- | ----------------- | -------------------------------------------- |
-| GET    | `/api/todos`          | —                 | `[{ todo_id, title, is_complete, user_id }]` |
-| POST   | `/api/todos`          | `{ title }`       | `{ todo_id, title, is_complete, user_id }`   |
-| PATCH  | `/api/todos/:todo_id` | `{ is_complete }` | `{ todo_id, title, is_complete, user_id }`   |
-| DELETE | `/api/todos/:todo_id` | —                 | `{ todo_id, title, is_complete, user_id }`   |
+| Method | Endpoint | Body | Response |
+|--------|----------|------|----------|
+| `GET` | `/api/books` | — | Array of book objects |
+| `POST` | `/api/books` | `{ title, author, genre, status, rating, notes }` | New book object |
+| `PATCH` | `/api/books/:book_id` | Any updatable field(s) | Updated book object |
+| `DELETE` | `/api/books/:book_id` | — | Deleted book object |
+
+**Sample request:**
+```json
+POST /api/books
+{ "title": "Dune", "author": "Frank Herbert", "genre": "Sci-Fi", "status": "reading" }
+```
+
+**Sample response:**
+```json
+{ "book_id": 3, "title": "Dune", "author": "Frank Herbert", "genre": "Sci-Fi", "status": "reading", "rating": null, "notes": null, "user_id": 1 }
+```
+
+---
+
+## Screenshots
+
+
+| Login / Register | Book List |
+|------------------|-----------|
+| ![Auth](/mod-7/full-stack-project-remix-NoboniSultan/screenshots/Screenshot-1.png) | ![Books](/mod-7/full-stack-project-remix-NoboniSultan/screenshots/Screenshot-2.png) |
+
+---
 
 ## Setup
 
-### 1. Database
+**Prerequisites:** Node.js v18+, PostgreSQL v14+
 
-Create a local Postgres database:
+```bash
+# 1. Clone
+git clone https://github.com/your-username/boi.git
+cd boi
 
-```sh
-createdb todos_casestudy
-```
-
-### 2. Server
-
-```sh
+# 2. Server
 cd server
 npm install
-cp .env.template .env
-```
-
-Open `.env` and fill in your Postgres credentials and a session secret. Then seed the database:
-
-```sh
+cp .env.template .env   # fill in your values
 npm run db:seed
-```
+npm run dev             # http://localhost:8080
 
-Start the server:
-
-```sh
-npm run dev
-```
-
-The server runs on `http://localhost:8080`.
-
-### 3. Frontend
-
-In a second terminal:
-
-```sh
+# 3. Frontend (new terminal)
 cd frontend
 npm install
-npm run dev
+npm run dev             # http://localhost:5173
 ```
 
-The frontend runs on `http://localhost:5173`. The Vite dev proxy forwards all `/api` requests to the Express server so session cookies work correctly.
+### Environment Variables (`server/.env`)
 
-## Seed Users
+```env
+PG_HOST=localhost
+PG_PORT=5432
+PG_DATABASE=boi_db
+PG_USER=your_pg_username
+PG_PASSWORD=your_pg_password
+SESSION_SECRET=your_secret_here
+PORT=8080
+```
 
-After running `npm run db:seed`, these accounts are available:
+### Seed Users
 
-| Username | Password    |
-| -------- | ----------- |
-| alice    | password123 |
-| bob      | password123 |
+| Username | Password |
+|----------|----------|
+| `alice` | `password123` |
+| `bob` | `password123` |
 
-## Application Structure
+---
+
+## Folder Structure
 
 ```
-swe-casestudy-7-todo-app/
-├── frontend/               # React app (Vite)
+boi/
+├── frontend/
 │   ├── src/
-│   │   ├── App.jsx         # Root component: currentUser state, session rehydration, auth handlers
+│   │   ├── App.jsx                 # currentUser state + session rehydration
 │   │   ├── adapters/
-│   │   │   ├── auth-adapters.js  # Fetch adapters for /api/auth/* endpoints
-│   │   │   └── todo-adapters.js  # Fetch adapters for /api/todos/* endpoints
+│   │   │   ├── authAdapters.js
+│   │   │   └── bookAdapters.js
 │   │   └── components/
-│   │       ├── AuthPage.jsx    # Login + Register forms (shown when logged out)
-│   │       ├── TodoPage.jsx    # Main app container (shown when logged in)
-│   │       ├── AddTodoForm.jsx # Form to create a new todo
-│   │       ├── TodoList.jsx    # Renders a list of TodoItems
-│   │       └── TodoItem.jsx    # Single todo: checkbox, title, delete button
-│   └── vite.config.js      # Proxies /api requests to Express in development
-└── server/                 # Express + Postgres API
-    ├── index.js            # App entry point, route definitions
+│   │       ├── AuthPage.jsx        # login + register (logged-out view)
+│   │       ├── BookPage.jsx        # main app shell (logged-in view)
+│   │       ├── BookList.jsx
+│   │       ├── BookCard.jsx
+│   │       ├── AddBookForm.jsx
+│   │       ├── EditBookForm.jsx
+│   │       └── FilterBar.jsx
+│   └── vite.config.js              # proxies /api → Express
+└── server/
+    ├── index.js
     ├── controllers/
-    │   ├── authControllers.js  # register, login, logout, getMe
-    │   └── todoControllers.js  # list, create, update, delete todos
+    │   ├── authControllers.js
+    │   └── bookControllers.js
     ├── models/
-    │   ├── userModel.js    # SQL queries for the users table
-    │   └── todoModel.js    # SQL queries for the todos table
+    │   ├── userModel.js
+    │   └── bookModel.js
     ├── middleware/
-    │   ├── checkAuthentication.js  # Blocks unauthenticated requests
-    │   └── logRoutes.js            # Logs each incoming request
+    │   ├── checkAuthentication.js
+    │   └── logRoutes.js
     └── db/
-        ├── pool.js         # Postgres connection pool
-        └── seed.js         # Creates tables and inserts sample data
+        ├── knex.js
+        └── seed.js
 ```
+
+---
+
+## Roadmap
+
+- Book cover art via the Open Library API
+- Yearly reading goal with progress bar
+- OAuth login (Google / GitHub)
+- Public shareable reading lists
+
+---
+
+## Author
+
+Noboni Sultan — Marcy Lab School Fellow
+
+- GitHub: [Noboni Sultan](https://github.com/NoboniSultan)
+- LinkedIn: [Noboni Sultan](https://www.linkedin.com/in/nobonisultan/)
+
+---

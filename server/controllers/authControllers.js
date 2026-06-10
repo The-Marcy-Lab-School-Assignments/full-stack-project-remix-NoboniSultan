@@ -1,51 +1,83 @@
+const bcrypt = require('bcrypt');
 const userModel = require('../models/userModel');
 
-module.exports.register = async (req, res, next) => {
-  try {
-    const { username, password } = req.body;
-    if (!username || !password) {
-      return res.status(400).send({ error: 'Username and password are required.' });
-    }
+const SALT_ROUNDS = 10;
 
-    const existingUser = await userModel.findByUsername(username);
-    if (existingUser) {
-      return res.status(400).send({ error: 'Username already taken.' });
-    }
+/**
+ * POST /api/auth/register
+ * Body: { username, password }
+ * Creates a new user account and opens a session.
+ */
+const register = async (req, res) => {
+  const { username, password } = req.body;
 
-    const user = await userModel.create(username, password);
-    req.session.user_id = user.user_id;
-    res.status(201).send(user);
-  } catch (err) {
-    next(err);
+  if (!username || !password) {
+    return res.status(400).json({ error: 'Username and password are required.' });
   }
-};
 
-module.exports.login = async (req, res, next) => {
-  try {
-    const { username, password } = req.body;
-    const user = await userModel.validatePassword(username, password);
-    if (!user) return res.status(401).send({ error: 'Invalid credentials.' });
-    req.session.user_id = user.user_id;
-    res.send(user);
-  } catch (err) {
-    next(err);
+  const existing = await userModel.findByUsername(username);
+  if (existing) {
+    return res.status(409).json({ error: 'Username already taken.' });
   }
+
+  const passwordHash = await bcrypt.hash(password, SALT_ROUNDS);
+  const user = await userModel.create(username, passwordHash);
+
+  req.session.userId = user.user_id;
+  res.status(201).json(user);
 };
 
-// Returns the logged-in user object, or null if no session exists.
-// Returning JSON null (200) keeps the response format consistent — the frontend
-// can always call response.json() without hitting a parse error.
-module.exports.getMe = async (req, res, next) => {
-  try {
-    if (!req.session.user_id) return res.json(null);
-    const user = await userModel.find(req.session.user_id);
-    res.json(user);
-  } catch (err) {
-    next(err);
+/**
+ * POST /api/auth/login
+ * Body: { username, password }
+ * Validates credentials and opens a session.
+ */
+const login = async (req, res) => {
+  const { username, password } = req.body;
+
+  if (!username || !password) {
+    return res.status(400).json({ error: 'Username and password are required.' });
   }
+
+  const user = await userModel.findByUsername(username);
+  if (!user) {
+    return res.status(401).json({ error: 'Invalid username or password.' });
+  }
+
+  const match = await bcrypt.compare(password, user.password_hash);
+  if (!match) {
+    return res.status(401).json({ error: 'Invalid username or password.' });
+  }
+
+  req.session.userId = user.user_id;
+  res.json({ user_id: user.user_id, username: user.username });
 };
 
-module.exports.logout = (req, res) => {
-  req.session = null;
-  res.send({ message: 'Logged out.' });
+/**
+ * DELETE /api/auth/logout
+ * Destroys the current session.
+ */
+const logout = (req, res) => {
+  req.session.destroy((err) => {
+    if (err) return res.status(500).json({ error: 'Could not log out.' });
+    res.clearCookie('connect.sid');
+    res.json({ message: 'Logged out successfully.' });
+  });
 };
+
+/**
+ * GET /api/auth/me
+ * Returns the currently logged-in user, or null.
+ * Used for session rehydration on frontend mount.
+ */
+const getMe = async (req, res) => {
+  const userId = req.session.userId;
+  if (!userId) return res.json(null);
+
+  const user = await userModel.findById(userId);
+  if (!user) return res.json(null);
+
+  res.json(user);
+};
+
+module.exports = { register, login, logout, getMe };
