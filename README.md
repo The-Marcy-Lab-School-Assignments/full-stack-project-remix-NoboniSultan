@@ -2,8 +2,8 @@
 
 *boi (বই) means "books" in Bangla.*
 
-**Live Demo:** https://boi-frontend.onrender.com *(placeholder)*
-**API:** https://boi-api.onrender.com *(placeholder)*
+**Live Demo:** https://boi-frontend.onrender.com 
+**API:** https://boi-api.onrender.com 
 
 ---
 
@@ -105,11 +105,10 @@ POST /api/books
 
 ## Screenshots
 
-> *(Replace with real screenshots once the app is built.)*
 
 | Login / Register | Book List |
 |------------------|-----------|
-| ![Auth](https://placehold.co/600x380?text=Auth+Page) | ![Books](https://placehold.co/600x380?text=Book+List) |
+| ![Auth](/mod-7/full-stack-project-remix-NoboniSultan/screenshots/Screenshot-1.png) | ![Books](/mod-7/full-stack-project-remix-NoboniSultan/screenshots/Screenshot-2.png) |
 
 ---
 
