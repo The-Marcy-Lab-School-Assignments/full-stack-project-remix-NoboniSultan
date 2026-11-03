@@ -5,6 +5,7 @@ require('dotenv').config();
 
 const logRoutes = require('./middleware/logRoutes');
 const checkAuthentication = require('./middleware/checkAuthentication');
+const asyncHandler = require('./middleware/asyncHandler');
 
 const authControllers = require('./controllers/authControllers');
 const bookControllers = require('./controllers/bookControllers');
@@ -47,19 +48,19 @@ app.use(
 // Auth routes
 // ====================================
 
-app.post('/api/auth/register', authControllers.register);
-app.post('/api/auth/login', authControllers.login);
-app.get('/api/auth/me', authControllers.getMe);
-app.delete('/api/auth/logout', authControllers.logout);
+app.post('/api/auth/register', asyncHandler(authControllers.register));
+app.post('/api/auth/login', asyncHandler(authControllers.login));
+app.get('/api/auth/me', asyncHandler(authControllers.getMe));
+app.delete('/api/auth/logout', asyncHandler(authControllers.logout));
 
 // ====================================
 // Book routes (all require authentication)
 // ====================================
 
-app.get('/api/books', checkAuthentication, bookControllers.listBooks);
-app.post('/api/books', checkAuthentication, bookControllers.createBook);
-app.patch('/api/books/:book_id', checkAuthentication, bookControllers.updateBook);
-app.delete('/api/books/:book_id', checkAuthentication, bookControllers.deleteBook);
+app.get('/api/books', checkAuthentication, asyncHandler(bookControllers.listBooks));
+app.post('/api/books', checkAuthentication, asyncHandler(bookControllers.createBook));
+app.patch('/api/books/:book_id', checkAuthentication, asyncHandler(bookControllers.updateBook));
+app.delete('/api/books/:book_id', checkAuthentication, asyncHandler(bookControllers.deleteBook));
 
 // ====================================
 // Catch-All: serve React app for any non-API route
