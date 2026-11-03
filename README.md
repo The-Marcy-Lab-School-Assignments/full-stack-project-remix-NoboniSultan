@@ -2,10 +2,11 @@
 
 *boi (বই) means "books" in Bangla.*
 
-**Live demo:** not currently deployed — see [Deployment](#deployment) to put it
-back up. The previous `boi-frontend` / `boi-api` Render URLs were released when
-those services were torn down and now belong to unrelated apps, so they are not
-linked here.
+**Live demo:** https://boi-noboni.onrender.com
+
+Sign in with `alice` / `password123` to see a seeded account, or register your
+own. The free Render instance sleeps when idle, so the first load after a quiet
+spell takes about a minute.
 
 **Repo:** https://github.com/The-Marcy-Lab-School-Assignments/full-stack-project-remix-NoboniSultan
 
