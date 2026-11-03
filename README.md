@@ -2,8 +2,12 @@
 
 *boi (বই) means "books" in Bangla.*
 
-**Live Demo:** https://boi-frontend.onrender.com 
-**API:** https://boi-api.onrender.com 
+**Live demo:** not currently deployed — see [Deployment](#deployment) to put it
+back up. The previous `boi-frontend` / `boi-api` Render URLs were released when
+those services were torn down and now belong to unrelated apps, so they are not
+linked here.
+
+**Repo:** https://github.com/The-Marcy-Lab-School-Assignments/full-stack-project-remix-NoboniSultan
 
 ---
 
@@ -40,7 +44,7 @@ boi is a personal reading tracker for people who want to stay on top of what the
 | Backend | Node.js + Express |
 | Database | PostgreSQL |
 | Auth | express-session + bcrypt |
-| Deployment | Render (app) + Railway (DB) |
+| Deployment | Render — one web service + managed Postgres |
 
 ---
 
@@ -108,7 +112,7 @@ POST /api/books
 
 | Login / Register | Book List |
 |------------------|-----------|
-| ![Auth](/mod-7/full-stack-project-remix-NoboniSultan/screenshots/Screenshot-1.png) | ![Books](/mod-7/full-stack-project-remix-NoboniSultan/screenshots/Screenshot-2.png) |
+| ![Auth](screenshots/Screenshot-1.png) | ![Books](screenshots/Screenshot-2.png) |
 
 ---
 
@@ -118,8 +122,8 @@ POST /api/books
 
 ```bash
 # 1. Clone
-git clone https://github.com/your-username/boi.git
-cd boi
+git clone git@github.com:The-Marcy-Lab-School-Assignments/full-stack-project-remix-NoboniSultan.git
+cd full-stack-project-remix-NoboniSultan
 
 # 2. Server
 cd server
@@ -137,14 +141,18 @@ npm run dev             # http://localhost:5173
 ### Environment Variables (`server/.env`)
 
 ```env
-PG_HOST=localhost
-PG_PORT=5432
-PG_DATABASE=boi_db
-PG_USER=your_pg_username
-PG_PASSWORD=your_pg_password
+# `pg` picks these up by name on its own — pool.js passes no config locally.
+PGHOST=127.0.0.1
+PGPORT=5432
+PGDATABASE=boi_db
+PGUSER=your_pg_username
+PGPASSWORD=your_pg_password
+
 SESSION_SECRET=your_secret_here
-PORT=8080
 ```
+
+In production none of the above are set. `pool.js` instead reads a single
+`DATABASE_URL` (or `PG_CONNECTION_STRING`) and connects over SSL.
 
 ### Seed Users
 
@@ -186,9 +194,36 @@ boi/
     │   ├── checkAuthentication.js
     │   └── logRoutes.js
     └── db/
-        ├── knex.js
+        ├── pool.js                  # local env vars, or DATABASE_URL in prod
         └── seed.js
 ```
+
+---
+
+## Deployment
+
+One Render web service runs everything: Express serves the API *and* the built
+React app from `frontend/dist`, so the browser talks to a single origin and
+session cookies work with no CORS configuration.
+
+`render.yaml` describes the whole thing. In the Render dashboard choose
+**New → Blueprint**, point it at this repo, and Render creates the Postgres
+instance, wires `DATABASE_URL` into the service, and generates
+`SESSION_SECRET`.
+
+Then seed the database once, from the service's shell:
+
+```bash
+npm run db:seed --prefix server
+```
+
+**Pick a service name that is not already taken.** Render releases a subdomain
+as soon as its service is deleted, and short names like `boi-api` get claimed
+again quickly — which is exactly what happened to the original URLs. Something
+like `boi-noboni` is far less likely to be reused.
+
+On the free plan the service sleeps after inactivity, so the first request
+after a quiet spell takes around a minute.
 
 ---
 

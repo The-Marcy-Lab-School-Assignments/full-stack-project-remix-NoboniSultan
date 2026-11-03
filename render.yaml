@@ -1,0 +1,28 @@
+# One web service: Express serves the API and the built React app from the
+# same origin, which is why session cookies work without any CORS setup.
+#
+# To deploy: Render dashboard → New → Blueprint → point it at this repo.
+# Render reads this file, creates the database and the service, and wires
+# DATABASE_URL in automatically.
+services:
+  - type: web
+    name: boi
+    runtime: node
+    plan: free
+    # Build the frontend, then install the server's own dependencies.
+    buildCommand: npm install --prefix server && npm run build --prefix server
+    startCommand: npm start --prefix server
+    envVars:
+      - key: NODE_ENV
+        value: production
+      # Signs session cookies. Render generates a random value on first deploy.
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: boi-db
+          property: connectionString
+
+databases:
+  - name: boi-db
+    plan: free

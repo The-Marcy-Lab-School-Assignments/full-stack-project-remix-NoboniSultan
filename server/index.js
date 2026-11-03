@@ -11,6 +11,12 @@ const bookControllers = require('./controllers/bookControllers');
 
 const app = express();
 const PORT = process.env.PORT || 8080;
+const isProduction = process.env.NODE_ENV === 'production';
+
+// Render terminates TLS at its proxy and forwards over HTTP. Without this
+// Express sees an insecure request and refuses to set a `secure` cookie, so
+// nobody can stay logged in.
+if (isProduction) app.set('trust proxy', 1);
 
 // ====================================
 // Middleware
@@ -31,7 +37,8 @@ app.use(
     saveUninitialized: false,
     cookie: {
       httpOnly: true,
-      // secure: true // uncomment when deployed with HTTPS
+      secure: isProduction,
+      sameSite: 'lax',
       maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
     },
   })
