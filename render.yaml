@@ -6,7 +6,11 @@
 # DATABASE_URL in automatically.
 services:
   - type: web
-    name: boi
+    # Deliberately not just "boi": Render frees a subdomain the moment its
+    # service is deleted, and short generic names get re-claimed within days.
+    # That is how the original boi-api and boi-frontend URLs ended up serving
+    # other people's apps.
+    name: boi-noboni
     runtime: node
     plan: free
     # Build the frontend, then install the server's own dependencies.
